@@ -11,7 +11,7 @@ struct User
 
 int main()
 {
-    QSettings settings("settings.xml", XML_SETTINGS_FORMAT);
+    QSettings settings("settings." + XmlSettings::extension, XmlSettings::format);
 
     qDebug() << "write";
 

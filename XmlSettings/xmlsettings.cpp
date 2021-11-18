@@ -19,12 +19,12 @@ QString XmlNode::fullPath() const
     while ((cur = qobject_cast<const XmlNode*>(cur->parent())) != Q_NULLPTR)
         path.prepend(cur->tagName + "/");
 
-    return path.mid(XML_SETTINGS_ROOT_TAG.count() + 1);
+    return path.mid(XmlSettings::rootTag.count() + 1);
 };
 
 
 
-bool readXmlSettings(QIODevice &device, QSettings::SettingsMap &map)
+bool XmlSettings::read(QIODevice &device, QSettings::SettingsMap &map)
 {
     QXmlStreamReader xml(&device);
     XmlNode *curNode = Q_NULLPTR;
@@ -35,12 +35,12 @@ bool readXmlSettings(QIODevice &device, QSettings::SettingsMap &map)
             case QXmlStreamReader::StartElement:
                 if (curNode != Q_NULLPTR) {
                     QString tag = xml.name().toString();
-                    if (tag.startsWith(XML_SETTINGS_INDEX_PREFIX))
-                        tag = tag.mid(XML_SETTINGS_INDEX_PREFIX.count());
+                    if (tag.startsWith(indexPrefix))
+                        tag = tag.mid(indexPrefix.count());
                     curNode = new XmlNode(tag, QByteArray(), curNode);
                 }
-                else if (xml.name().toString() == XML_SETTINGS_ROOT_TAG)
-                    curNode = new XmlNode(XML_SETTINGS_ROOT_TAG);
+                else if (xml.name().toString() == rootTag)
+                    curNode = new XmlNode(rootTag);
                 else
                     return false;
                 break;
@@ -69,9 +69,9 @@ bool readXmlSettings(QIODevice &device, QSettings::SettingsMap &map)
 
 
 
-bool writeXmlSettings(QIODevice &device, const QSettings::SettingsMap &map)
+bool XmlSettings::write(QIODevice &device, const QSettings::SettingsMap &map)
 {
-    XmlNode *root = new XmlNode(XML_SETTINGS_ROOT_TAG);
+    XmlNode *root = new XmlNode(rootTag);
 
     for (const QString &unsplitKey : map.keys()) {
         QStringList segs = unsplitKey.split("/", QString::SkipEmptyParts);
@@ -126,7 +126,7 @@ bool writeXmlSettings(QIODevice &device, const QSettings::SettingsMap &map)
         if (!isNumber)
             xml.writeStartElement(cur->tagName);
         else
-            xml.writeStartElement(XML_SETTINGS_INDEX_PREFIX + cur->tagName);
+            xml.writeStartElement(indexPrefix + cur->tagName);
 
         stack << Q_NULLPTR;
 

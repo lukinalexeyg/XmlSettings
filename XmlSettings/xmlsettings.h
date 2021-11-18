@@ -5,12 +5,15 @@
 
 #include <QSettings>
 
-bool readXmlSettings(QIODevice &device, QSettings::SettingsMap &map);
-bool writeXmlSettings(QIODevice &device, const QSettings::SettingsMap &map);
+namespace XmlSettings {
+    bool read(QIODevice &device, QSettings::SettingsMap &map);
+    bool write(QIODevice &device, const QSettings::SettingsMap &map);
 
-static const QSettings::Format XML_SETTINGS_FORMAT = QSettings::registerFormat("xml", &readXmlSettings, &writeXmlSettings);
-static const QString XML_SETTINGS_ROOT_TAG = "settings";
-static const QString XML_SETTINGS_INDEX_PREFIX = "index_";
+    static const QString extension = QStringLiteral("xml");
+    static const QSettings::Format format = QSettings::registerFormat(extension, &read, &write);
+    static const QString rootTag = QStringLiteral("settings");
+    static const QString indexPrefix = QStringLiteral("index_");
+};
 
 class XmlNode : public QObject
 {
