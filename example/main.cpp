@@ -1,6 +1,7 @@
-#include <QCoreApplication>
-#include <QDebug>
 #include "xmlsettings.h"
+
+#include <QSettings>
+#include <QDebug>
 
 struct User
 {
@@ -8,32 +9,28 @@ struct User
     QString password;
 };
 
-int main(int argc, char *argv[])
+int main()
 {
-    QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("XmlSettings example");
-    QCoreApplication::setOrganizationName("Alexey Lukin");
-
     QSettings settings("settings.xml", XML_SETTINGS_FORMAT);
 
     qDebug() << "write";
 
     settings.beginGroup("app");
-    settings.setValue("app_name", QCoreApplication::applicationName());
+    settings.setValue("app_name", "XmlSettingsExample");
     settings.endGroup();
 
-    const QList<User> USERS = {
+    const QVector<User> users = {
         {"Alex", "ldEwMbCywgTsNztbl4Jj"},
         {"Martha", "j5uCqdyhNJ_FyQ2bwFFv"},
         {"Michael", "mIZSvSGHMlXk9gGcP0_B"}
     };
 
     settings.beginWriteArray("users");
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < users.count(); ++i) {
         settings.setArrayIndex(i);
-        settings.setValue("name", USERS.at(i).name);
-        settings.setValue("password", USERS.at(i).password);
-        qDebug() << USERS.at(i).name << USERS.at(i).password;
+        settings.setValue("name", users.at(i).name);
+        settings.setValue("password", users.at(i).password);
+        qDebug() << users.at(i).name << users.at(i).password;
     }
     settings.endArray();
 
@@ -41,11 +38,9 @@ int main(int argc, char *argv[])
     qDebug() << "read";
 
     settings.beginReadArray("users");
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < users.count(); ++i) {
         settings.setArrayIndex(i);
         qDebug() << settings.value("name").toString() << settings.value("password").toString();
     }
     settings.endArray();
-
-    return app.exec();
 }
