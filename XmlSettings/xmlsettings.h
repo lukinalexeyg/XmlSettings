@@ -1,8 +1,6 @@
 #ifndef XMLSETTINGS_H
 #define XMLSETTINGS_H
 
-#pragma once
-
 #include <QSettings>
 
 namespace XmlSettings {

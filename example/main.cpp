@@ -3,6 +3,10 @@
 #include <QSettings>
 #include <QDebug>
 
+static const QLatin1String s_users("users");
+static const QLatin1String s_name("name");
+static const QLatin1String s_password("password");
+
 struct User
 {
     QString name;
@@ -15,8 +19,8 @@ int main()
 
     qDebug() << "write";
 
-    settings.beginGroup("app");
-    settings.setValue("app_name", "XmlSettingsExample");
+    settings.beginGroup(QStringLiteral("app"));
+    settings.setValue(s_name, QStringLiteral("XmlSettingsExample"));
     settings.endGroup();
 
     const QVector<User> users = {
@@ -25,11 +29,11 @@ int main()
         {"Michael", "mIZSvSGHMlXk9gGcP0_B"}
     };
 
-    settings.beginWriteArray("users");
+    settings.beginWriteArray(s_users);
     for (int i = 0; i < users.count(); ++i) {
         settings.setArrayIndex(i);
-        settings.setValue("name", users.at(i).name);
-        settings.setValue("password", users.at(i).password);
+        settings.setValue(s_name, users.at(i).name);
+        settings.setValue(s_password, users.at(i).password);
         qDebug() << users.at(i).name << users.at(i).password;
     }
     settings.endArray();
@@ -37,10 +41,10 @@ int main()
     qDebug() << "";
     qDebug() << "read";
 
-    settings.beginReadArray("users");
+    settings.beginReadArray(s_users);
     for (int i = 0; i < users.count(); ++i) {
         settings.setArrayIndex(i);
-        qDebug() << settings.value("name").toString() << settings.value("password").toString();
+        qDebug() << settings.value(s_name).toString() << settings.value(s_password).toString();
     }
     settings.endArray();
 }

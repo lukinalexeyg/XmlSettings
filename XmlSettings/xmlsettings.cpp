@@ -1,5 +1,8 @@
-#include <QXmlStreamReader>
 #include "xmlsettings.h"
+
+#include <QXmlStreamReader>
+
+static const QLatin1Char s_separator('/');
 
 
 
@@ -7,7 +10,8 @@ XmlNode::XmlNode(const QString &name, const QByteArray &text, QObject *parent) :
     QObject(parent),
     tagName(name),
     subText(text)
-{}
+{
+}
 
 
 
@@ -17,7 +21,7 @@ QString XmlNode::fullPath() const
     QString path = tagName;
 
     while ((cur = qobject_cast<const XmlNode*>(cur->parent())) != Q_NULLPTR)
-        path.prepend(cur->tagName + "/");
+        path.prepend(cur->tagName + s_separator);
 
     return path.mid(XmlSettings::rootTag.count() + 1);
 };
@@ -64,6 +68,7 @@ bool XmlSettings::read(QIODevice &device, QSettings::SettingsMap &map)
     }
 
     map.clear();
+
     return false;
 }
 
@@ -74,7 +79,7 @@ bool XmlSettings::write(QIODevice &device, const QSettings::SettingsMap &map)
     XmlNode *root = new XmlNode(rootTag);
 
     for (const QString &unsplitKey : map.keys()) {
-        QStringList segs = unsplitKey.split("/", QString::SkipEmptyParts);
+        QStringList segs = unsplitKey.split(s_separator, Qt::SkipEmptyParts);
         QByteArray val = map[unsplitKey].toByteArray();
         XmlNode *cur = root;
 
