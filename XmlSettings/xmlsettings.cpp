@@ -20,7 +20,7 @@ QString XmlNode::fullPath() const
     const XmlNode *cur = this;
     QString path = tagName;
 
-    while ((cur = qobject_cast<const XmlNode*>(cur->parent())) != Q_NULLPTR)
+    while ((cur = qobject_cast<const XmlNode*>(cur->parent())) != nullptr)
         path.prepend(cur->tagName + s_separator);
 
     return path.mid(XmlSettings::rootTag.count() + 1);
@@ -31,13 +31,13 @@ QString XmlNode::fullPath() const
 bool XmlSettings::read(QIODevice &device, QSettings::SettingsMap &map)
 {
     QXmlStreamReader xml(&device);
-    XmlNode *curNode = Q_NULLPTR;
+    XmlNode *curNode = nullptr;
 
     while (!xml.atEnd()) {
         switch(xml.readNext()) {
 
             case QXmlStreamReader::StartElement:
-                if (curNode != Q_NULLPTR) {
+                if (curNode != nullptr) {
                     QString tag = xml.name().toString();
                     if (tag.startsWith(indexPrefix))
                         tag = tag.mid(indexPrefix.count());
@@ -87,7 +87,7 @@ bool XmlSettings::write(QIODevice &device, const QSettings::SettingsMap &map)
             if (i == segs.length() - 1)
                 new XmlNode(segs[i], val, cur);
             else {
-                XmlNode *foundItem = Q_NULLPTR;
+                XmlNode *foundItem = nullptr;
                 for (QObject *object : cur->children()) {
                     XmlNode *child = qobject_cast<XmlNode*>(object);
                     if (QString::compare(child->tagName, segs[i], Qt::CaseInsensitive) == 0) {
@@ -115,7 +115,7 @@ bool XmlSettings::write(QIODevice &device, const QSettings::SettingsMap &map)
     while (true) {
         XmlNode *cur;
 
-        while ((cur = stack.takeLast()) == Q_NULLPTR) {
+        while ((cur = stack.takeLast()) == nullptr) {
             xml.writeEndElement();
 
             if (stack.isEmpty()) {
@@ -133,9 +133,9 @@ bool XmlSettings::write(QIODevice &device, const QSettings::SettingsMap &map)
         else
             xml.writeStartElement(indexPrefix + cur->tagName);
 
-        stack << Q_NULLPTR;
+        stack << nullptr;
 
-        if (cur->children().size() == 0)
+        if (cur->children().isEmpty())
             xml.writeCharacters(cur->subText);
         else
             for (int i = cur->children().length()-1; i >= 0; i--)
