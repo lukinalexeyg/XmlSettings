@@ -1,6 +1,6 @@
 # XmlSettings
 
-XmlSettings is the QSettings XML format.
+XmlSettings is the XML QSettings format.
 
 ### Improvements over the original
 - Support for arrays
