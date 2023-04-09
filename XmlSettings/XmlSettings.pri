@@ -2,14 +2,6 @@ INCLUDEPATH += $$PWD
 
 DEPENDPATH += $$PWD
 
-#QT += core
-#QT -= gui
+SOURCES += $$PWD/xmlsettings.cpp
 
-#CONFIG += c++11 console
-#CONFIG -= app_bundle
-
-SOURCES += \
-    $$PWD/xmlsettings.cpp
-
-HEADERS  += \
-    $$PWD/xmlsettings.h
+HEADERS += $$PWD/xmlsettings.h

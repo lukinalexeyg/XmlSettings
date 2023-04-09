@@ -24,7 +24,7 @@ QString XmlNode::fullPath() const
         path.prepend(cur->tagName + s_separator);
 
     return path.mid(XmlSettings::rootTag.count() + 1);
-};
+}
 
 
 

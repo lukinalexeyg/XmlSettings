@@ -1,21 +1,20 @@
 #include "xmlsettings.h"
 
-#include <QSettings>
 #include <QDebug>
 
 static const QLatin1String s_users("users");
 static const QLatin1String s_name("name");
-static const QLatin1String s_password("password");
+static const QLatin1String s_hash("hash");
 
 struct User
 {
     QString name;
-    QString password;
+    QString hash;
 };
 
 int main()
 {
-    QSettings settings("settings." + XmlSettings::extension, XmlSettings::format);
+    QSettings settings(QStringLiteral("%1.%2").arg(XmlSettings::rootTag, XmlSettings::extension), XmlSettings::format);
 
     qDebug() << "write";
 
@@ -33,8 +32,8 @@ int main()
     for (int i = 0; i < users.count(); ++i) {
         settings.setArrayIndex(i);
         settings.setValue(s_name, users.at(i).name);
-        settings.setValue(s_password, users.at(i).password);
-        qDebug() << users.at(i).name << users.at(i).password;
+        settings.setValue(s_hash, users.at(i).hash);
+        qDebug() << users.at(i).name << users.at(i).hash;
     }
     settings.endArray();
 
@@ -44,7 +43,7 @@ int main()
     settings.beginReadArray(s_users);
     for (int i = 0; i < users.count(); ++i) {
         settings.setArrayIndex(i);
-        qDebug() << settings.value(s_name).toString() << settings.value(s_password).toString();
+        qDebug() << settings.value(s_name).toString() << settings.value(s_hash).toString();
     }
     settings.endArray();
 }
